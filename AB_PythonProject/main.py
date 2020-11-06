@@ -1,16 +1,38 @@
-# This is a sample Python script.
+def main():
+    whse = Whse()
 
-# Press Shift+F10 to execute it or replace it with your code.
-# Press Double Shift to search everywhere for classes, files, tool windows, actions, and settings.
+    while True:
+        print("Введение название:")
+        name = input()
 
+        print("Введение количество:")
+        qty = input()
 
-def print_hi(name):
-    # Use a breakpoint in the code line below to debug your script.
-    print(f'Hi, {name}')  # Press Ctrl+F8 to toggle the breakpoint.
+        good = Good(name, qty)
 
+        whse.addGood(good)
 
-# Press the green button in the gutter to run the script.
-if __name__ == '__main__':
-    print_hi('PyCharm')
+        print("Вывести все:")
+        resultDialog = input()
 
-# See PyCharm help at https://www.jetbrains.com/help/pycharm/
+        if resultDialog == "да":
+            print("Информация о складе:")
+            for good in whse.getGoods():
+                print(good.name + " - " + str(good.qty))
+
+class Good:
+    def __init__(self, name, qty):
+        self.name = name
+        self.qty = qty
+
+class Whse:
+    goods = []
+
+    def addGood(self, good):
+        if good is not None:
+            self.goods.append(good)
+
+    def getGoods(self):
+        return self.goods
+
+main()
