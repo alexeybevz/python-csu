@@ -1,7 +1,10 @@
 class Good:
-    def __init__(self, name, qty):
+    def __init__(self, name, qty, manufacturer, price, size):
         self.name = name
         self.qty = qty
+        self.manufacturer = manufacturer
+        self.price = price
+        self.size = size
 
 
 class Whse:
@@ -10,7 +13,6 @@ class Whse:
 
     def addGood(self, good):
         self.goods[good.name] = good.qty
-        # self.goods.append(good)
 
     def getGoods(self):
         return self.goods
@@ -18,13 +20,18 @@ class Whse:
     def delGoods(self, key):
         self.goods.pop(key, None)
 
-
 def add(whse):
     print("Введение название:")
     name = input()
     print("Введение количество:")
     qty = input()
-    good = Good(name, qty)
+    print("Введение производителя:")
+    manufacturer = input()
+    print("Введение цену:")
+    price = input()
+    print("Введение размер:")
+    size = input()
+    good = Good(name, qty, manufacturer, price, size)
 
     whse.addGood(good)
 
