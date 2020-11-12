@@ -1,24 +1,9 @@
-class Good:
-    def __init__(self, name, qty, manufacturer, price, size):
-        self.name = name
-        self.qty = qty
-        self.manufacturer = manufacturer
-        self.price = price
-        self.size = size
+from good import Good
+from whse import Whse
+from good_id_generator import GoodIdGenerator
 
-
-class Whse:
-    def __init__(self):
-        self.goods = {}
-
-    def addGood(self, good):
-        self.goods[good.name] = good.qty
-
-    def getGoods(self):
-        return self.goods
-
-    def delGoods(self, key):
-        self.goods.pop(key, None)
+whse = Whse()
+goodIdGenerator = GoodIdGenerator()
 
 def add(whse):
     print("Введение название:")
@@ -31,30 +16,38 @@ def add(whse):
     price = input()
     print("Введение размер:")
     size = input()
-    good = Good(name, qty, manufacturer, price, size)
 
-    whse.addGood(good)
-
+    good = Good()
+    good.id = goodIdGenerator.inc_id()
+    good.name = name
+    good.qty = qty
+    good.manufacter = manufacturer
+    good.price = price
+    good.size = size
+    whse.add_good(good)
 
 def report(whse):
-    print("Информация о складе:")
-    info = whse.getGoods()
-    for good in whse.getGoods().keys():
-        print(f'{good} - {info[good]}')
-    print('\n')
+    print('Информация о товарах на складе:')
+    if not whse.is_goods_exists():
+        print('Склад пуст.')
+        return
 
+    goods = whse.get_goods()
+    print('Название - Количество - Производитель - Цена - Размер')
+    for good_id in goods.keys():
+        g = goods[good_id]
+        print(f'{g.id} - {g.name} - {g.qty} - {g.manufacter} - {g.price} - {g.size}')
 
-whse = Whse()
 while True:
-    print('1-добавить\n2-Вывести все\n3-удалить\n4-выйти\n')
-    name = int(input())
-    if name == 1:
+    print('\n1-добавить\n2-вывести все\n3-удалить\n4-выйти\n')
+    mode = int(input())
+    if mode == 1:
         add(whse)
-    elif name == 2:
+    elif mode == 2:
         report(whse)
-    elif name == 3:
+    elif mode == 3:
         report(whse)
-        key = input('введите ключ\n')
-        whse.delGoods(key)
+        id = int(input('Введите id удаляемого товара:\n'))
+        whse.delete_good(id)
     else:
         break
