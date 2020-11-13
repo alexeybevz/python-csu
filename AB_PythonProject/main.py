@@ -1,9 +1,12 @@
+import os
 from good import Good
 from whse import Whse
 from good_id_generator import GoodIdGenerator
+from whse_file_persistable import WhseFilePersistable
 
 whse = Whse()
 goodIdGenerator = GoodIdGenerator()
+whseFilePersistable = WhseFilePersistable(os.path.dirname(os.path.realpath(__file__)) + r'\whse.txt')
 
 def add(whse):
     print("Введение название:")
@@ -17,12 +20,14 @@ def add(whse):
     print("Введение размер:")
     size = input()
 
+    new_id = goodIdGenerator.inc_id(whse.get_goods())
+
     good = Good()
-    good.id = goodIdGenerator.inc_id()
+    good.id = new_id
     good.name = name
-    good.qty = qty
+    good.qty = float(qty)
     good.manufacter = manufacturer
-    good.price = price
+    good.price = float(price)
     good.size = size
     whse.add_good(good)
 
@@ -33,12 +38,17 @@ def report(whse):
         return
 
     goods = whse.get_goods()
-    print('Название - Количество - Производитель - Цена - Размер')
+    print('ID - Название - Количество - Производитель - Цена - Размер')
     for good_id in goods.keys():
         g = goods[good_id]
         print(f'{g.id} - {g.name} - {g.qty} - {g.manufacter} - {g.price} - {g.size}')
 
+is_start_program = True
 while True:
+    if is_start_program:
+        is_start_program = False
+        whse.add_goods_list(whseFilePersistable.get_data())
+
     print('\n1-добавить\n2-вывести все\n3-удалить\n4-выйти\n')
     mode = int(input())
     if mode == 1:
@@ -49,5 +59,8 @@ while True:
         report(whse)
         id = int(input('Введите id удаляемого товара:\n'))
         whse.delete_good(id)
+    elif mode == 4:
+        whseFilePersistable.save_data(whse.get_goods())
+        break
     else:
         break
