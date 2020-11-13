@@ -4,9 +4,10 @@ from whse import Whse
 from good_id_generator import GoodIdGenerator
 from whse_file_persistable import WhseFilePersistable
 
+current_dir = os.path.dirname(os.path.realpath(__file__))
 whse = Whse()
 goodIdGenerator = GoodIdGenerator()
-whseFilePersistable = WhseFilePersistable(os.path.dirname(os.path.realpath(__file__)) + r'\whse.txt')
+whseFilePersistable = WhseFilePersistable(current_dir + r'\whse.txt')
 
 def add(whse):
     print("Введение название:")
@@ -49,7 +50,7 @@ while True:
         is_start_program = False
         whse.add_goods_list(whseFilePersistable.get_data())
 
-    print('\n1-добавить\n2-вывести все\n3-удалить\n4-выйти\n')
+    print('\n1-добавить\n2-вывести все\n3-удалить\n4-дозагрузить остатки\n5-статистика\n6-выйти\n')
     mode = int(input())
     if mode == 1:
         add(whse)
@@ -60,6 +61,11 @@ while True:
         id = int(input('Введите id удаляемого товара:\n'))
         whse.delete_good(id)
     elif mode == 4:
+        print('Укажите название файла. Файл должен находиться в текущей директории.')
+        file_name = input()
+        whseReader = WhseFilePersistable(current_dir + '\\' + file_name)
+        whse.add_goods_list(whseReader.get_data())
+    elif mode == 6:
         whseFilePersistable.save_data(whse.get_goods())
         break
     else:
