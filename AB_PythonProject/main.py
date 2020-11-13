@@ -44,6 +44,36 @@ def report(whse):
         g = goods[good_id]
         print(f'{g.id} - {g.name} - {g.qty} - {g.manufacter} - {g.price} - {g.size}')
 
+def report_by_field(field):
+    if field == 'производитель':
+        print('Статистика по производителю\n')
+    elif field == 'размер':
+        print('Статистика по размерам\n')
+    else:
+        return
+
+    goods = whse.get_goods().values()
+    result = {}
+
+    for g in goods:
+        key = ""
+        if field == 'производитель':
+            key = g.manufacter
+        elif field == 'размер':
+            key = g.size
+        else:
+            return
+
+        if key in result:
+            result[key] = result[key] + 1
+        else:
+            result[key] = 1
+    
+    for k in result.keys():
+        print(f'{k} - {result[k]}')
+
+    print('\n')
+
 is_start_program = True
 while True:
     if is_start_program:
@@ -65,6 +95,9 @@ while True:
         file_name = input()
         whseReader = WhseFilePersistable(current_dir + '\\' + file_name)
         whse.add_goods_list(whseReader.get_data())
+    elif mode == 5:
+        report_by_field('производитель')
+        report_by_field('размер')
     elif mode == 6:
         whseFilePersistable.save_data(whse.get_goods())
         break
