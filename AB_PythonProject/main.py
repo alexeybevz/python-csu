@@ -21,7 +21,8 @@ def add(whse):
     print("Введение размер:")
     size = input()
 
-    new_id = goodIdGenerator.inc_id(whse.get_goods())
+    goodIdGenerator.set_id(whse.get_goods())
+    new_id = goodIdGenerator.inc_id()
 
     good = Good()
     good.id = new_id
@@ -74,6 +75,14 @@ def report_by_field(field):
 
     print('\n')
 
+def add_goods_runtime(path):
+    whseReader = WhseFilePersistable(path)
+    goods = whseReader.get_data()
+    goodIdGenerator.set_id(whse.get_goods())    
+    for k in goods.keys():
+        goods[k].id = goodIdGenerator.inc_id()
+    whse.add_goods_list(goods)
+
 is_start_program = True
 while True:
     if is_start_program:
@@ -93,8 +102,7 @@ while True:
     elif mode == 4:
         print('Укажите название файла. Файл должен находиться в текущей директории.')
         file_name = input()
-        whseReader = WhseFilePersistable(current_dir + '\\' + file_name)
-        whse.add_goods_list(whseReader.get_data())
+        add_goods_runtime(current_dir + '\\' + file_name)
     elif mode == 5:
         report_by_field('производитель')
         report_by_field('размер')

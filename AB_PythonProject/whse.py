@@ -10,7 +10,8 @@ class Whse:
 
     def add_goods_list(self, goods_dict):
         for good_id in goods_dict.keys():
-            self.goods[good_id] = goods_dict[good_id]
+            key_from_obj = goods_dict[good_id].id
+            self.goods[key_from_obj] = goods_dict[good_id]
 
     def get_goods(self):
         return self.goods
