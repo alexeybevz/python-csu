@@ -1,20 +1,24 @@
+from db_service import WhseDbService
+
+db = WhseDbService()
+
 class Whse:
-    def __init__(self):
-        self.goods = {}
+    #def __init__(self):
 
     def is_goods_exists(self):
-        return (len(self.goods) > 0)
+        return (len(db.get_goods()) > 0)
 
     def add_good(self, good):
-        self.goods[good.id] = good
+        db.add_good(good)
 
-    def add_goods_list(self, goods_dict):
-        for good_id in goods_dict.keys():
-            key_from_obj = goods_dict[good_id].id
-            self.goods[key_from_obj] = goods_dict[good_id]
+    def add_goods_list(self, goods_list):
+        db.add_good_list(goods_list)
 
     def get_goods(self):
-        return self.goods
+        return db.get_goods()
 
-    def delete_good(self, key):
-        self.goods.pop(key, None)
+    def delete_good(self, id):
+        db.delete_good(id)
+
+    def report_by_field(self, field):
+        return db.report_by_field(field)
