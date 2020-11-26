@@ -1,5 +1,4 @@
-from good import Good
-from whse import Whse
+from domain.product import Product
 
 class WhseFilePersistable:
     def __init__(self, path):

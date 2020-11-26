@@ -1,42 +1,26 @@
 import os
-from good import Good
-from whse import Whse
+from domain.product import Product
+from domain.tshirt_product import TShirtProduct
+from domain.sneakers_product import SneakersProduct
+from domain.customizable_sneakers_product import CustomizableSneakersProduct
+from db_service import DbService
 from whse_file_persistable import WhseFilePersistable
 
 current_dir = os.path.dirname(os.path.realpath(__file__))
-whse = Whse()
+db = DbService()
 whseFilePersistable = WhseFilePersistable(current_dir + r'\whse.txt')
 
-def add(whse):
-    print("Введение название:")
-    name = input()
-    print("Введение количество:")
-    qty = input()
-    print("Введение производителя:")
-    manufacturer = input()
-    print("Введение цену:")
-    price = input()
-    print("Введение размер:")
-    size = input()
+def report():
+    products = db.get_products()
 
-    good = Good()
-    good.name = name
-    good.qty = float(qty)
-    good.manufacter = manufacturer
-    good.price = float(price)
-    good.size = size
-    whse.add_good(good)
-
-def report(whse):
     print('Информация о товарах на складе:')
-    if not whse.is_goods_exists():
+    if len(products) == 0:
         print('Склад пуст.')
         return
 
-    goods = whse.get_goods()
-    print('ID - Название - Количество - Производитель - Цена - Размер')
-    for g in goods:
-        print(f'{g.id} - {g.name} - {g.qty} - {g.manufacter} - {g.price} - {g.size}')
+    print('Артикул - Тип - Название - Количество - Производитель - Цена - Размер - Цвет')
+    for p in products:
+        print(f'{p.sku} - {p.type_product} - {p.name} - {p.qty} - {p.manufacter} - {p.price} - {p.color}')
 
 def report_by_field(field):
     if field == 'производитель':
@@ -46,7 +30,7 @@ def report_by_field(field):
     else:
         return
 
-    result = whse.report_by_field(field)
+    result = db.report_by_field(field)
     for row in result:
         f, count = row
         print(f'{f} - {count}')
@@ -56,19 +40,31 @@ def report_by_field(field):
 def add_goods_runtime(path):
     whseReader = WhseFilePersistable(path)
     goods = whseReader.get_data()
-    whse.add_goods_list(goods)
+    db.add_goods_list(goods)
+
+type_products = [ '1-TShirt', '2-Sneakers', '3-CustSneakers']
 
 while True:
     print('\n1-добавить\n2-вывести все\n3-удалить\n4-дозагрузить остатки\n5-статистика\n6-выйти\n')
     mode = int(input())
     if mode == 1:
-        add(whse)
+        selected_type_product = input(f'Введите тип товара ({type_products}):')
+        if selected_type_product == '1':
+            product = TShirtProduct()
+        elif selected_type_product == '2':
+            product = SneakersProduct()
+        elif selected_type_product == '3':
+            product = CustomizableSneakersProduct()
+        else:
+            raise TypeError('Неверный тип товара')
+        product.console_input()
+        db.add_product(product)
     elif mode == 2:
-        report(whse)
+        report()
     elif mode == 3:
-        report(whse)
-        id = int(input('Введите id удаляемого товара:\n'))
-        whse.delete_good(id)
+        report()
+        sku = int(input('Введите артикул удаляемого товара:\n'))
+        db.delete_product(sku)
     elif mode == 4:
         print('Укажите название файла. Файл должен находиться в текущей директории.')
         file_name = input()
@@ -77,7 +73,7 @@ while True:
         report_by_field('производитель')
         report_by_field('размер')
     elif mode == 6:
-        whseFilePersistable.save_data(whse.get_goods())
+        whseFilePersistable.save_data(db.get_goods())
         break
     else:
         break
