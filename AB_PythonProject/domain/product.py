@@ -2,6 +2,13 @@ from decimal import Decimal
 
 class Product:
 
+    def __init__(self):
+        self._sku = ''
+        self._name = ''
+        self._qty = 0
+        self._manufacter = ''
+        self._price = 0
+
     def console_input(self):
         self._sku = input("Введите артикул:")
         self._name = input("Введите название:")

@@ -1,6 +1,12 @@
+from decimal import Decimal
 from domain.product import Product
 
 class TShirtProduct(Product):
+
+    def __init__(self):
+        super().__init__()
+        self._size = 0
+        self._color = ''
 
     def console_input(self):
         super().console_input()
@@ -23,6 +29,8 @@ class TShirtProduct(Product):
 
     @size.setter
     def size(self, value):
+        if (Decimal(value) < 0):
+            raise ValueError('Размер не может быть отрицательным')
         self._size = value
     #endregion
 

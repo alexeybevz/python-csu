@@ -15,7 +15,25 @@ class DbService:
             'Database=PythonProject;'
             'Trusted_Connection=yes;')
 
+    def get_conn(self):
+        return self.conn
+
     def add_product(self, product):
+        if not product.sku.strip():
+            raise ValueError('Не заполнено свойство sku')
+        if not product.name.strip():
+            raise ValueError('Не заполнено свойство name')
+        if product.qty == 0:
+            raise ValueError('Не заполнено свойство qty')
+        if not product.manufacter.strip():
+            raise ValueError('Не заполнено свойство manufacter')
+        if product.price == 0:
+            raise ValueError('Не заполнено свойство price')
+        if product.size == 0:
+            raise ValueError('Не заполнено свойство size')
+        if not product.color.strip():
+            raise ValueError('Не заполнено свойство color')
+
         if product.__class__.__name__ in ['TShirtProduct', 'SneakersProduct']:
             query = r'''INSERT INTO product (sku, type_product, name, qty, manufacter, price, size, color)
                         VALUES (?, ?, ?, ?, ?, ?, ?, ?);'''
@@ -32,6 +50,11 @@ class DbService:
             ))
             cursor.commit()
         elif product.__class__.__name__ == 'CustomizableSneakersProduct':
+            if product.type_print:
+                raise ValueError('Не заполнено свойство size')
+            if product.shoe_laces:
+                raise ValueError('Не заполнено свойство color')
+
             query = r'''INSERT INTO product (sku, type_product, name, qty, manufacter, price, size, color, type_print, shoe_laces)
                         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?);'''
             cursor = self.conn.cursor()

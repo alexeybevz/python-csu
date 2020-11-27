@@ -3,6 +3,9 @@ from decimal import Decimal
 
 class CustomizableSneakersProduct(SneakersProduct):
     def __init__(self):
+        super().__init__()
+        self._size = ''
+        self._color = ''
         self.__print_price = Decimal(0.0)
         self.__shoe_laces_price = Decimal(0.0)
 
