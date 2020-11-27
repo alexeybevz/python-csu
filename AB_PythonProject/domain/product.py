@@ -5,16 +5,16 @@ class Product:
     def console_input(self):
         self._sku = input("Введите артикул:")
         self._name = input("Введите название:")
-        self._qty = int(input("Введите количество:"))
+        self._qty = input("Введите количество:")
         self._manufacter = input("Введите производителя:")
-        self._price = Decimal(input("Введите цену:"))
+        self._price = input("Введите цену:")
 
     def parse_input(self, row):
         self._sku = row[0]
         self._name = row[1]
         self._qty = row[2]
         self._manufacter = row[3]
-        self._price = Decimal(row[4])
+        self._price = row[4]
 
     def console_output(self):
         print('Тип - Артикул - Название - Количество - Производитель - Цена')
@@ -47,7 +47,9 @@ class Product:
 
     @qty.setter
     def qty(self, value):
-        self._qty = value
+        if (int(value) < 0):
+            raise ValueError('Количество не может быть отрицательным')
+        self._qty = int(value)
     #endregion
 
     #region Property Manufacter
@@ -67,5 +69,7 @@ class Product:
 
     @price.setter
     def price(self, value):
-        self._price = value
+        if (Decimal(value) < 0):
+            raise ValueError('Цена не может быть отрицательной')
+        self._price = Decimal(value)
     #endregion
