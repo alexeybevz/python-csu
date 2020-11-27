@@ -3,6 +3,9 @@ from domain.product import Product
 from domain.tshirt_product import TShirtProduct
 from domain.sneakers_product import SneakersProduct
 from domain.customizable_sneakers_product import CustomizableSneakersProduct
+from product_creator import ProductCreator
+
+product_creator = ProductCreator()
 
 class DbService:
     def __init__(self):
@@ -60,32 +63,15 @@ class DbService:
 
     def get_products(self):
         cursor = self.conn.cursor()
-        query = 'SELECT sku, type_product, name, qty, manufacter, price, size, color, type_print, shoe_laces FROM product'
+        query = 'SELECT sku, name, qty, manufacter, price, size, color, type_print, shoe_laces, type_product FROM product'
         cursor.execute(query)
 
+        index = 9
         products = []
         for row in cursor:
-            if row[1] == 'TShirtProduct':
-                p = TShirtProduct()
-            elif row[1] == 'SneakersProduct':
-                p = SneakersProduct()
-            elif row[1] == 'CustomizableSneakersProduct':
-                p = CustomizableSneakersProduct()
-                p.type_print = row[8]
-                p.shoe_laces = row[9]
-            else:
-                raise TypeError()
-
-            p.sku = row[0]
-            p.type_product = row[1]
-            p.name = row[2]
-            p.qty = row[3]
-            p.manufacter = row[4]
-            p.price = row[5]
-            p.size = row[6]
-            p.color = row[7]
-
-            products.append(p)
+            product = product_creator.create(row[index])
+            product.parse_input(row)
+            products.append(product)
 
         return products
 

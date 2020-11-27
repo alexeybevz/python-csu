@@ -1,32 +1,44 @@
-from domain.product import Product
+from product_creator import ProductCreator
+
+product_creator = ProductCreator()
 
 class WhseFilePersistable:
     def __init__(self, path):
         self.path = path
 
     def get_data(self):
-        goods = []
+        products = []
 
         with open(self.path, 'r') as f:
             next(f)
             for line in f:
                 line = line[:-1]
                 props = line.split(';')
-                g = Good()
-                g.name = props[1]
-                g.qty = float(props[2])
-                g.manufacter = props[3]
-                g.price = float(props[4])
-                g.size = props[5]
-                goods.append(g)
 
-        return goods
+                product = product_creator.create(props[0])
+                del props[0]
+                product.parse_input(props)
+                products.append(product)
 
-    def save_data(self, goods):
+        return products
+
+    def save_data(self, products):
         f = open(self.path, 'w')
-        f.write('ID;Название;Количество;Производитель;Цена;Размер\n')
+        f.write('Тип;Артикул;Название;Количество;Производитель;Цена;Размер;Цвет;Принт;Шнурки\n')
 
-        for g in goods:
-            f.write(f'{g.id};{g.name};{g.qty};{g.manufacter};{g.price};{g.size}\n')
+        columns = [ 'sku', 'name', 'qty', 'manufacter', 'price', 'size', 'color', 'type_print', 'shoe_laces' ]
+        for product in products:
+            f.write(f'{product.__class__.__name__};')
+
+            for c in columns:
+                f.write(f'{self.__write_columns(product, c)}')
+
+            f.write('\n')
 
         f.close()
+
+    def __write_columns(self, product, property_name):
+        if hasattr(product, property_name):
+            return f'{getattr(product, property_name)};'
+        else:
+            return ';'

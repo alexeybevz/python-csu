@@ -1,9 +1,10 @@
 from domain.sneakers_product import SneakersProduct
+from decimal import Decimal
 
 class CustomizableSneakersProduct(SneakersProduct):
     def __init__(self):
-        self.__print_price = 0.0
-        self.__shoe_laces_price = 0.0
+        self.__print_price = Decimal(0.0)
+        self.__shoe_laces_price = Decimal(0.0)
 
         self.__type_prints_dict = {
             "Print1": 100.0,
@@ -19,8 +20,17 @@ class CustomizableSneakersProduct(SneakersProduct):
 
     def console_input(self):
         super().console_input()
-        self.type_print = input(f'Выберите принт ({self.__type_prints_dict}):')
-        self.shoe_laces = input(f'Выберите шнурки ({self.__shoe_laces_dict}):')
+        self._type_print = input(f'Выберите принт ({self.__type_prints_dict}):')
+        self._shoe_laces = input(f'Выберите шнурки ({self.__shoe_laces_dict}):')
+
+    def parse_input(self, row):
+        super().parse_input(row)
+        self._type_print = row[7]
+        self._shoe_laces = row[8]
+
+    def console_output(self):
+        print('Тип - Артикул - Название - Количество - Производитель - Цена - Размер - Цвет - Принт - Шнурки')
+        print(f'{self.__class__.__name__} - {self._sku} - {self._name} - {self._qty} - {self._manufacter} - {self._price} - {self._size} - {self._color} - {self._type_print} - {self._shoe_laces}')
 
     @property
     def price(self):
