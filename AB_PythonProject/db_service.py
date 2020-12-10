@@ -9,11 +9,7 @@ product_creator = ProductCreator()
 
 class DbService:
     def __init__(self):
-        self.conn = pyodbc.connect(
-            'Driver={SQL Server Native Client 11.0};'
-            'Server=ALEX-PC\ALEXSERVER;'
-            'Database=PythonProject;'
-            'Trusted_Connection=yes;')
+        self.conn = pyodbc.connect('DRIVER=MySQL ODBC 8.0 Unicode Driver;SERVER=localhost;DataBase=pythonproject;UID=;PWD=')
 
     def get_conn(self):
         return self.conn
@@ -50,10 +46,10 @@ class DbService:
             ))
             cursor.commit()
         elif product.__class__.__name__ == 'CustomizableSneakersProduct':
-            if product.type_print:
-                raise ValueError('Не заполнено свойство size')
-            if product.shoe_laces:
-                raise ValueError('Не заполнено свойство color')
+            if not product.type_print.strip():
+                raise ValueError('Не заполнено свойство type_print')
+            if not product.shoe_laces.strip():
+                raise ValueError('Не заполнено свойство shoe_laces')
 
             query = r'''INSERT INTO product (sku, type_product, name, qty, manufacter, price, size, color, type_print, shoe_laces)
                         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?);'''

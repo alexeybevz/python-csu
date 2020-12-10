@@ -1,0 +1,4 @@
+Тип;Артикул;Название;Количество;Производитель;Цена;Размер;Цвет;Принт;Шнурки
+TShirtProduct;11;1;1.00000;1;1.00;1.00;blue;;;
+SneakersProduct;12;2;2.00000;2;2.00;2.00;red;;;
+CustomizableSneakersProduct;13;3;3.00000;3;3.00;3.00;green;Print3;ShoeLace3;

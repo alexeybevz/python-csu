@@ -1,8 +1,10 @@
+import os
 import pytest
 from decimal import Decimal
 from domain.product import Product
 from domain.tshirt_product import TShirtProduct
 from db_service import DbService
+from whse_file_persistable import WhseFilePersistable
 
 db = DbService()
 
@@ -116,3 +118,8 @@ def test_report_by_size():
         db.delete_product(row['sku'])
 
     assert (expected_keys == actual_keys) and (expected_values == actual_values)
+
+def test_parse_csv():
+    parser = WhseFilePersistable(os.path.dirname(os.path.realpath(__file__)) + '/whse_test.csv')
+    products = parser.get_data()
+    assert (len(products) == 3)

@@ -23,13 +23,13 @@ class CustomizableSneakersProduct(SneakersProduct):
 
     def console_input(self):
         super().console_input()
-        self._type_print = input(f'Выберите принт ({self.__type_prints_dict}):')
-        self._shoe_laces = input(f'Выберите шнурки ({self.__shoe_laces_dict}):')
+        self.type_print = input(f'Выберите принт ({self.__type_prints_dict}):')
+        self.shoe_laces = input(f'Выберите шнурки ({self.__shoe_laces_dict}):')
 
     def parse_input(self, row):
         super().parse_input(row)
-        self._type_print = row[7]
-        self._shoe_laces = row[8]
+        self.type_print = row[7]
+        self.shoe_laces = row[8]
 
     def console_output(self):
         print('Тип - Артикул - Название - Количество - Производитель - Цена - Размер - Цвет - Принт - Шнурки')

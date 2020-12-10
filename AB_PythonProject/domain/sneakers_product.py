@@ -10,13 +10,13 @@ class SneakersProduct(Product):
 
     def console_input(self):
         super().console_input()
-        self._size = input("Введение размер:")
-        self._color = input("Введение цвет:")
+        self.size = input("Введение размер:")
+        self.color = input("Введение цвет:")
 
     def parse_input(self, row):
         super().parse_input(row)
-        self._size = row[5]
-        self._color = row[6]
+        self.size = row[5]
+        self.color = row[6]
 
     def console_output(self):
         print('Тип - Артикул - Название - Количество - Производитель - Цена - Размер - Цвет')
