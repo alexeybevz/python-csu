@@ -26,28 +26,24 @@ def test_add_empty_product_deny():
     for c in columns:
         try:
             db.add_product(product)
-        # with pytest.raises(Exception) as e_info:
         except ValueError as err:
             result += 1
             setattr(product, c, columns[c])
 
-    if check_product_exists:
-        result += 1
+    assert result == 7
 
-    assert result == 8
-
-def test_delete_product():
-    sku = '123'
-    db.delete_product(sku)
-    assert check_product_exists(sku) == False
-
-def check_product_exists(sku):
-    cursor = db.get_conn().cursor()
-    query = 'SELECT COUNT(sku) AS count_sku FROM product WHERE sku = ?'
-    count = cursor.execute(query, ('123')).fetchone()[0]
-    cursor.commit()
-
-    return count > 0
+def test_add_and_delete_product():
+    p = TShirtProduct()
+    p.sku = 'test_sku_1'
+    p.name = 'test_name'
+    p.qty = 1
+    p.manufacter = 'manufacter1'
+    p.price = 100
+    p.size = 42
+    p.color = 'black'
+    db.add_product(p)
+    db.delete_product(p.sku)
+    assert db.is_product_exists(p.sku) == False
 
 def test_report_by_manufacter():
     row1 = { 'sku': 'test_sku_1', 'name': '1', 'qty': 1, 'manufacter': 'mnf_1', 'price': 100, 'size': 48, 'color': 'red' }
@@ -123,3 +119,21 @@ def test_parse_csv():
     parser = WhseFilePersistable(os.path.dirname(os.path.realpath(__file__)) + '/whse_test.csv')
     products = parser.get_data()
     assert (len(products) == 3)
+
+def test_update_product():
+    row = { 'sku': 'test_sku_1', 'name': '1', 'qty': 1, 'manufacter': 'mnf_1', 'price': 100, 'size': 48, 'color': 'red' }
+
+    product = TShirtProduct()
+    for r in row:
+        setattr(product, r, row[r])
+
+    db.add_product(product)
+
+    product.name = 'new name'
+    db.add_product(product)
+
+    products = db.get_products()
+    db_product = db.get_product(product.sku)
+    db.delete_product(product.sku)
+
+    assert ((len(products) == 1) and (db_product.name == 'new name'))

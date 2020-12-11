@@ -30,6 +30,12 @@ class DbService:
         if not product.color.strip():
             raise ValueError('Не заполнено свойство color')
 
+        if (self.is_product_exists(product.sku)):
+            self.__update(product)
+        else:
+            self.__add(product)
+
+    def __add(self, product):
         if product.__class__.__name__ in ['TShirtProduct', 'SneakersProduct']:
             query = r'''INSERT INTO product (sku, type_product, name, qty, manufacter, price, size, color)
                         VALUES (?, ?, ?, ?, ?, ?, ?, ?);'''
@@ -68,7 +74,50 @@ class DbService:
             ))
             cursor.commit()
         else:
-            raise TypeError('add_product error')
+            raise TypeError('add product error')
+
+    def __update(self, product):
+        if product.__class__.__name__ in ['TShirtProduct', 'SneakersProduct']:
+            query = r'''UPDATE product
+                        SET type_product=?, name=?, qty=?, manufacter=?, price=?, size=?, color=?
+                        WHERE sku=?;'''
+            cursor = self.conn.cursor()
+            cursor.execute(query, (
+                product.__class__.__name__,
+                product.name,
+                product.qty,
+                product.manufacter,
+                product.price,
+                product.size,
+                product.color,
+                product.sku,
+            ))
+            cursor.commit()
+        elif product.__class__.__name__ == 'CustomizableSneakersProduct':
+            if not product.type_print.strip():
+                raise ValueError('Не заполнено свойство type_print')
+            if not product.shoe_laces.strip():
+                raise ValueError('Не заполнено свойство shoe_laces')
+
+            query = r'''UPDATE product
+                        SET type_product=?, name=?, qty=?, manufacter=?, price=?, size=?, color=?, type_print=?, shoe_laces=?
+                        WHERE sku=?;'''
+            cursor = self.conn.cursor()
+            cursor.execute(query, (
+                product.__class__.__name__,
+                product.name,
+                product.qty,
+                product.manufacter,
+                product.price,
+                product.size,
+                product.color,
+                product.type_print,
+                product.shoe_laces,
+                product.sku,
+            ))
+            cursor.commit()
+        else:
+            raise TypeError('update product error')
 
     def add_product_list(self, products_list):
         for product in products_list:
@@ -94,6 +143,19 @@ class DbService:
 
         return products
 
+    def get_product(self, sku):
+        cursor = self.conn.cursor()
+        query = 'SELECT sku, name, qty, manufacter, price, size, color, type_print, shoe_laces, type_product FROM product WHERE sku = ?'
+        cursor.execute(query, (sku))
+        row = cursor.fetchone()
+        if row == None:
+            return None
+
+        product = product_creator.create(row[9])
+        product.parse_input(row)
+
+        return product
+
     def report_by_field(self, field):
         db_field = ''
         if field == 'производитель':
@@ -112,3 +174,11 @@ class DbService:
             result.append(row)
 
         return result
+
+    def is_product_exists(self, sku):
+        cursor = self.conn.cursor()
+        query = 'SELECT COUNT(sku) AS count_sku FROM product WHERE sku = ?'
+        count = cursor.execute(query, (sku)).fetchone()[0]
+        cursor.commit()
+
+        return count > 0
