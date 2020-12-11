@@ -27,6 +27,16 @@ class Product:
         print('Тип - Артикул - Название - Количество - Производитель - Цена')
         print(f'{self.__class__.__name__} - {self._sku} - {self._name} - {self._qty} - {self._manufacter} - {self._price}')
 
+    def serialize(self):
+        return {
+            'type_product': self.__class__.__name__,
+            'sku': self.sku, 
+            'name': self.name,
+            'qty': str(self.qty),
+            'manufacter': self.manufacter,
+            'price': str(self.price),
+        }        
+
     #region Property Sku
     @property
     def sku(self):

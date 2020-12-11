@@ -22,6 +22,19 @@ class TShirtProduct(Product):
         print('Тип - Артикул - Название - Количество - Производитель - Цена - Размер - Цвет')
         print(f'{self.__class__.__name__} - {self._sku} - {self._name} - {self._qty} - {self._manufacter} - {self._price} - {self._size} - {self._color}')
 
+
+    def serialize(self):
+        return {
+            'type_product': self.__class__.__name__,
+            'sku': self.sku, 
+            'name': self.name,
+            'qty': str(self.qty),
+            'manufacter': self.manufacter,
+            'price': str(self.price),
+            'size': str(self.size),
+            'color': self.color,
+        }                  
+
     #region Property Size
     @property
     def size(self):

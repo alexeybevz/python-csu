@@ -35,6 +35,21 @@ class CustomizableSneakersProduct(SneakersProduct):
         print('Тип - Артикул - Название - Количество - Производитель - Цена - Размер - Цвет - Принт - Шнурки')
         print(f'{self.__class__.__name__} - {self._sku} - {self._name} - {self._qty} - {self._manufacter} - {self._price} - {self._size} - {self._color} - {self._type_print} - {self._shoe_laces}')
 
+
+    def serialize(self):
+        return {
+            'type_product': self.__class__.__name__,
+            'sku': self.sku, 
+            'name': self.name,
+            'qty': str(self.qty),
+            'manufacter': self.manufacter,
+            'price': str(self.price),
+            'size': str(self.size),
+            'color': self.color,
+            'type_print': self.type_print,
+            'shoe_laces': self.shoe_laces,            
+        }                  
+
     @property
     def price(self):
         return super().price + self.__print_price + self.__shoe_laces_price
